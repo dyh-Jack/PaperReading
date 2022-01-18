@@ -132,7 +132,7 @@ Scheduled Sampling是一种解决训练和生成时输入数据分布不一致�
 
 不同的采样方法决定每一个纵向上起始单元的输入
 
-run.py中定义了不同的采样方法
+run.py中定义了不同的采样方法，其中引入了**Reverse Scheduled Sampling**，即先让模型使用前一单元生成的内容进行训练，再逐渐过渡到使用ground truth进行训练。好处在于这将促使模型更好的学习一些长期运动特征
 
 ![image-20220114154903749](C:\Users\dyh20200207\AppData\Roaming\Typora\typora-user-images\image-20220114154903749.png)
 
