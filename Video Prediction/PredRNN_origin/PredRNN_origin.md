@@ -88,6 +88,8 @@ ST-LSTM单元中的橙色圆圈表示与传统$ConvLSTM$的差异。PredRNN中�
 
 其中conv_x,conv_h,conv_m,conv_o相当于对于所有与这一变量相关的矩阵直接进行卷积计算，之后的num_hidden所乘系数不同，即是在对这些数据进行分割时使用。
 
+**因为M之字形传播，而且RNN模型中间各层宽度都不变，所以M的input_channel才始终不会变化；因为在每个时间步的最开始M是上一个时间步最后的那个M接过来了，M的通道数一直是不变的，始终为num_hidden；而x在每个时间步开始的时候会变化。**
+
 ![image-20220114150646598](C:\Users\dyh20200207\AppData\Roaming\Typora\typora-user-images\image-20220114150646598.png)
 
 进行数据分割，从而得到用于不同部分的运算项

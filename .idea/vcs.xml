@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ConvNeXt/ConvNeXt/ConvNeXt" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Structural Reparameterize/RepVGG/RepVGG" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Structural Reparameterize/ResRep/ResRep/ResRep" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Swin Transformer/Swin Transformer/Swin-Transformer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Video Prediction/PredRNN_new/PredRNN_new/predrnn-pytorch" vcs="Git" />
+  </component>
+</project>
