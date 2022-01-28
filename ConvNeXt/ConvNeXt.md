@@ -34,7 +34,7 @@
 
 ![image-20220124160121976](C:\Users\dyh20200207\AppData\Roaming\Typora\typora-user-images\image-20220124160121976.png)
 
-Large Kernel Size
+#### Large Kernel Size
 
 自从VGG之后，主流的CNN往往采用较小的kernel size，如3x3和5x5，其中3x3 conv在GPU上有高效的实现。然而Swin-T采用的window size为7x7，这比3x3 conv对应的windwo size要大得多，所以这里考虑采用更大的kernel size。 在这之前，首先**将dw conv移到inverted bottleneck block的最开始**，如上图（c）所示。对于transformer block，其实self-attention也是在开始，同时由于采用inverted bottleneck，将dw conv移动到最前面可以减少计算量（4.1G），后续采用较大的kernel size后模型的FLOPs变动更少。由于模型FLOPs的降低，模型性能也出现一定的下降：80.6%->79.9%。 然后调整dw conv的kernel size，这里共实验了5种kernel size：3x3，5x5，7x7，9x9和11x11。实验发现kernel size增加，模型性能有提升，但是在7x7之后采用更大的kernel size性能达到饱和。所以最终选择7x7，这样也和Swin-T的window size一致，由于前面的dw conv位置变动，采用7x7的kernel size基本没带来FLOPs的增加。采用7x7 dw conv之后，模型的性能又回到80.6%。
 

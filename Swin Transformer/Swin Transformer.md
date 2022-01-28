@@ -332,21 +332,34 @@ def forward(self, x, mask=None):
 
 在实际代码里，我们是**通过对特征图移位，并给 Attention 设置 mask 来间接实现的**。能在**保持原有的 window 个数下**，最后的计算结果等价。
 
+通过下图的方式可以在保证不重叠窗口间有联系的基础上不增加窗口的个数，新的窗口可能会由之前不相关的自窗口构成，为了保证shifted window self-attention计算的正确性，只能计算相同子窗口的self-attention，不同子窗口的self-attention结果要归0，否则就违背了shifted window self-attention 的原则。
+
 ![image-20220127160459567](C:\Users\dyh20200207\AppData\Roaming\Typora\typora-user-images\image-20220127160459567.png)
 
 ##### 特征图位移
 
-代码里对特征图移位是通过`torch.roll`来实现的，下面是示意图
+Shifted Window方法是在连续的两个Transformer Block之间实现的。
 
-![preview](https://pic4.zhimg.com/v2-93bbd9c158f3a4e90903b972111f2c4f_r.jpg)
+- 第一个模块使用一个标准的window partition策略，从feature map的左上角出发，例如一个8*8的feature map会被平分为2*2个window，每个window的大小为![[公式]](https://www.zhihu.com/equation?tex=M%3D4)。
+- 紧接着的第二个模块则使用了移动窗口的策略，window会从feature map的![[公式]](https://www.zhihu.com/equation?tex=%5Cleft%28%5Cleft%5Clfloor%5Cfrac%7BM%7D%7B2%7D%5Cright%5Crfloor%2C%5Cleft%5Clfloor%5Cfrac%7BM%7D%7B2%7D%5Cright%5Crfloor%5Cright%29)位置处开始，然后再进行window partition操作。
 
-如果需要`reverse cyclic shift`的话只需把参数`shifts`设置为对应的正数值。
+这样一来，不同window之间在两个连续的模块之间便有机会进行交互。
+
+然而，Shifted Window Partition存在一个问题，由于没有与边界对齐，其会产生更多的Windows，从![[公式]](https://www.zhihu.com/equation?tex=%5Cleft%5Clceil%5Cfrac%7Bh%7D%7BM%7D%5Cright%5Crceil+%5Ctimes%5Cleft%5Clceil%5Cfrac%7Bw%7D%7BM%7D%5Cright%5Crceil)个Windows上升至![[公式]](https://www.zhihu.com/equation?tex=%5Cleft%5Clceil%5Cfrac%7Bh%7D%7BM%7D%2B1%5Cright%5Crceil+%5Ctimes%5Cleft%5Clceil%5Cfrac%7Bw%7D%7BM%7D%2B1%5Cright%5Crceil)，并且其中很多windows的大小也不足![[公式]](https://www.zhihu.com/equation?tex=M%2AM)
+
+这其中，可以有一种比较naive的方法：
+
+![preview](https://pic3.zhimg.com/v2-c7d037d20ef14a5c0098572e38cc2bd2_r.jpg)
+
+可以看出这种解决方法的缺点在于额外计算了很多padding的部分，浪费了大量计算。
+
+而论文提出了一种新的方法：
 
 ![preview](https://pic2.zhimg.com/v2-c6cf952e2981cdd77661ac09e4de1fe9_r.jpg)
 
 ##### Attention Mask
 
-这是 Swin Transformer 的精华，通过设置合理的 mask，让`Shifted Window Attention`在与`Window Attention`相同的窗口个数下，达到等价的计算结果。
+这是 Swin Transformer 的精华，通过设置合理的 mask，让`Shifted Window Attention`在与`Window Attention`相同的窗口个数下，达到等价的计算结果。（**<u>其实本质上还是计算的shifted window的attention，只是在mask之后可以在节省大量计算量的同时满足对于新的窗口attention的计算</u>**）
 
 首先我们对 Shift Window 后的每个窗口都给上 index，并且做一个`roll`操作（window_size=2, shift_size=1）
 
@@ -400,7 +413,7 @@ if self.shift_size > 0:
     for h in h_slices:
         for w in w_slices:
             img_mask[:, h, w, :] = cnt
-            cnt += 1
+            cnt += 1 #对新的区块进行编号
 
     mask_windows = window_partition(img_mask, self.window_size)  # nW, window_size, window_size, 1
     mask_windows = mask_windows.view(-1, self.window_size * self.window_size)
@@ -409,6 +422,26 @@ if self.shift_size > 0:
 else:
  attn_mask = None
 ```
+
+这其中，slice进行切片，其中，如果按照上图设计，window_size=2（每个窗口中4个patch），共划分为4个窗口，shift_size = 1，即将原有的窗口整体向左上角移动一个单位，即可得到移动之后的新的窗口划分；在代码中直接进行切片得到对应的新的区块。
+
+其中：
+
+![[公式]](https://www.zhihu.com/equation?tex=shift%5C_size%3D%5Cleft%5Clfloor%5Cfrac%7BM%7D%7B2%7D%5Cright%5Crfloor)
+
+![preview](https://pic4.zhimg.com/v2-dc2fe96c5c67510aeabbcff3489c9757_r.jpg)
+
+![preview](https://pic1.zhimg.com/v2-61469886ee2ef8995996a5a0acd69ab8_r.jpg)
+
+![img](https://pic1.zhimg.com/80/v2-9cb8b56e82d02370c8b243a54a5efc00_1440w.jpg)
+
+![image-20220127193546715](C:\Users\dyh20200207\AppData\Roaming\Typora\typora-user-images\image-20220127193546715.png)
+
+![img](https://pic1.zhimg.com/80/v2-d4bd615abc8547385415512c4d4e0470_1440w.jpg)
+
+![img](https://pic3.zhimg.com/80/v2-b483bbdff8181f3bef9c5445d86b2d36_1440w.jpg)
+
+**相当于在经过shift_window之后，在计算attention的时候还是始终是相同编号的进行计算，编号不同的部分都要被掩码掩盖。**
 
 在之前的 window attention 模块的前向代码里，包含这么一段
 
