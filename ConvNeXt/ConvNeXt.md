@@ -57,3 +57,5 @@
 #### 小结
 
 从创新上看，ConvNeXt并没有太多的新意，看起来就是把vision transformer一些优化搬到了CNN上，而且之前也有很多类似的工作，但我认为ConvNeXt是一个很好的工作，因为做了比较全面的实现，而且ConvNeXt在工业部署上更有价值，因为swin transformer的实现太过tricky。从CNN到vision transformer再到CNN，还包括中间对MLP的探索，或许我们越来越能得出结论：**架构没有优劣之分，在同样的FLOPs下，不同的模型的性能是接近的**。但在实际任务上，受限于各种条件，我们可能看到不同模型上的性能差异，这就需要具体问题具体分析了。
+
+![img](https://img-blog.csdnimg.cn/5ddf2d71218c48258f3b32ae45e9a925.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5aSq6Ziz6Iqx55qE5bCP57u_6LGG,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
