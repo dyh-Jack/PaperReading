@@ -33,7 +33,7 @@ Swin Transformer的总体架构：
 
 #### Patch Embedding
 
-在输入进 Block 前，我们需要将图片切成一个个 patch，然后嵌入向量。**（如若输入为224x224，patch_size为4x4，那么每一个patch应为56x56）**
+在输入进 Block 前，我们需要将图片切成一个个 patch，然后嵌入向量。**（如若输入为224x224，patch_size为4x4，那么每一个patch_resolution应为56x56）**
 
 具体做法是对原始图片裁成一个个 56x56的窗口大小，然后进行嵌入。
 
