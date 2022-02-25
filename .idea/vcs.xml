@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ACON/Activate or Not/acon" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ConvNeXt/ConvNeXt/ConvNeXt" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Structural Reparameterize/RepVGG/RepVGG" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Structural Reparameterize/ResRep/ResRep/ResRep" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Swin Transformer/Swin Transformer/Swin-Transformer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Time Sequence Prediction/Autoformer/Autoformer/Autoformer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ViT/ViT/vision_transformer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Video Prediction/E3D-LSTM/E3D/e3d_lstm" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Video Prediction/Frequency/Learning in the frequency domain/Leaning Frequency/DCTNet" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Video Prediction/Frequency/Spatial-Temporal Multi-Frequency/2002/STMFANet" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Video Prediction/MIM_brief browse/Memory in Memory/MIM" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Video Prediction/PredRNN_new/PredRNN_new/predrnn-pytorch" vcs="Git" />
+  </component>
+</project>
